@@ -1,21 +1,33 @@
 package ru.sbt.lesson3;
 
-import java.util.LinkedList;
-import java.util.ListIterator;
+import java.util.*;
 
 /**
  * Created by Yrwing on 19.09.2016.
  */
 public class ListIt<String> implements ListIterator<String> {
+    private List<String> curList;
+    private int cursor;
+    private int headPointer;
+
+    public ListIt(List<String> L){
+        curList = L;
+        headPointer = L.size();
+        cursor =  headPointer;
+    }
     @Override
     public boolean hasNext() {
-        if(this.hasPrevious()){return true;}else return false;
+        return (cursor >= 0);
 
     }
 
     @Override
-    public  String next() {
-       return this.previous();
+    public  String next() throws NullPointerException{
+        if(this.hasNext()){
+            cursor--;
+            return curList.get(cursor);
+        }
+        else throw new NullPointerException();
     }
 
     @Override
@@ -44,12 +56,12 @@ public class ListIt<String> implements ListIterator<String> {
     }
 
     @Override
-    public void set(String s) {
-
+    public void set(String string) {
+        curList.set(cursor, string);
     }
 
     @Override
-    public void add(String s) {
-
+    public void add(String string) {
+        curList.add(string);
     }
 }
