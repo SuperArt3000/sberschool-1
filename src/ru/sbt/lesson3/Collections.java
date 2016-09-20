@@ -73,6 +73,14 @@ public class Collections{
         while(it.hasNext()){
             strs.add(it.next());
         }
+
+
+        Iterator<String> CustomIt = new ListIt<String>(strs);
+        while(CustomIt.hasNext()){
+            System.out.println("!!!" + CustomIt.next());
+        }
+
+
         Scanner s = new Scanner(System.in);
         try {
             for (int i = 0; i < strs.size(); i++) {
