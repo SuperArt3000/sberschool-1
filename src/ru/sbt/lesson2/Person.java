@@ -43,7 +43,7 @@ public class Person {
      public boolean divorce() {
          if(this.spouse != null){
              Person cur = this.spouse;
-             System.out.println(cur.equals(this.spouse));
+             System.out.println(cur == (this.spouse));
              this.spouse.spouse = null;
              this.spouse = null;
              return true;

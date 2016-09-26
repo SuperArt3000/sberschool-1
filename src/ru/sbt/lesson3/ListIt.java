@@ -19,6 +19,7 @@ public class ListIt<String> implements ListIterator<String> {
     public boolean hasNext() {
         return (cursor >= 0);
 
+
     }
 
     @Override

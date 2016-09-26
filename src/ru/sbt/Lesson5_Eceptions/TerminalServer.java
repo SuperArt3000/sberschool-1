@@ -17,7 +17,7 @@ public class TerminalServer {
     }
 
 
-    boolean putMoney(String name, short key, int money) throws  IOException {
+    boolean putMoney(String name, short key, int money) {
         try {
             if (money % 100 != 0) throw new IOException();
             System.out.println("Check: " + AccountMap.get(name).CheckWallet());
@@ -50,6 +50,6 @@ public class TerminalServer {
         }
     }
 
-    class NotEnoughGoldException extends Throwable{
+    private class NotEnoughGoldException extends Throwable{
     }
 }

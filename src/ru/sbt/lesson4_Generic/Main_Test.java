@@ -1,8 +1,9 @@
 package ru.sbt.lesson4_Generic;
 
-/**
- * Created by Yrwing on 22.09.2016.
- */
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Stream;
+
 public class Main_Test {
     public static void main(String[] args) {
         CountMap<String> hcm = new RealCountMap<>();
@@ -14,12 +15,18 @@ public class Main_Test {
         hcm_2.add("Victory");
         hcm_2.add("Hello");
         hcm.addAll(hcm_2);
-        for (String key: hcm.toMap().keySet()) {
-            System.out.println(key + "..." +hcm.getCount(key));
+        for (String key : hcm.toMap().keySet()) {
+            System.out.println(key + "..." + hcm.getCount(key));
         }
         System.out.println(hcm.size());
         System.out.println(hcm.remove("Hello"));
         System.out.println(hcm.remove("Hello"));
-
+        List<Integer> s1 = new ArrayList<>();
+        List<Integer> s2 = new ArrayList<>();
+        for (int i = 1; i < 10; i++) {
+            s1.add(i);
+            s2.add(2*i);
+        }
+        System.out.println(CollectionUtils.containsAny(s2, s1));
     }
 }

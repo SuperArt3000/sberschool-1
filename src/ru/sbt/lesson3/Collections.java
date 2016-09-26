@@ -1,6 +1,7 @@
 package ru.sbt.lesson3;
 
 import java.io.*;
+import java.math.BigInteger;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.util.*;
@@ -14,15 +15,16 @@ public class Collections{
     public static void main(String[] args) throws IOException {
 
 
-            //FileNotFound Exception. Независимо от того, какой путь указан и где лежит файл In.
-            /**File In = new File("C:\\In.txt");
-            System.out.println(In.getAbsolutePath());
-            System.out.println(In.canRead());
-            System.out.println(In.exists());
-            List<String> d = Files.readAllLines(new File("In.txt").toPath());
-            BufferedReader in = new BufferedReader(new FileReader(In));
-            FileReader in = new FileReader("In.txt");
-**/
+        //FileNotFound Exception. Независимо от того, какой путь указан и где лежит файл In.
+        File In_1 = new File("C:\\In.txt");
+        System.out.println(In_1.getAbsolutePath());
+        System.out.println(In_1.canRead());
+        System.out.println(In_1.exists());
+        BufferedReader in_2 = new BufferedReader(new FileReader("ru/sbt/lesson3/In.txt"));
+        //FileReader in_3 = new FileReader("In.txt");
+        System.out.println(in_2.readLine());
+    }}
+/**
 
         String in = "Hello, I am Yrwing.\nI am 22 years old.\nI study at Sberbank Technologies.";
         String[] strs = in.split("([^a-zA-Z]+)");
@@ -66,6 +68,7 @@ public class Collections{
         }
         System.out.println("_____");
         StringArrayList(strs);
+
     }
     static private void StringArrayList(Deque dq) throws ArrayIndexOutOfBoundsException{
         List<String> strs = new ArrayList<>();
@@ -92,3 +95,4 @@ public class Collections{
         }
     }
 }
+**/

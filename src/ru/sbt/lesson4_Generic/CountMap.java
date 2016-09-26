@@ -2,9 +2,7 @@ package ru.sbt.lesson4_Generic;
 
 import java.util.Map;
 
-/**
- * Created by Yrwing on 21.09.2016.
- */
+
 public interface CountMap<K> {
 
     // добавляет элемент в этот контейнер.
@@ -20,12 +18,12 @@ public interface CountMap<K> {
     int size();
 
     //Добавить все элементы из source в текущий контейнер, при совпадении ключей, суммировать значения
-    void addAll(CountMap<K> source);
+    void addAll(CountMap<? extends K> source);
 
     //Вернуть java.util.Map. ключ - добавленный элемент, значение - количество его добавлений
     Map<K, Integer> toMap();
 
     //Тот же самый контракт как и toMap(), только всю информацию записать в destination
-    void toMap(Map<K, Integer> destination);
+    void toMap(Map<? super K, Integer> destination);
 
 }

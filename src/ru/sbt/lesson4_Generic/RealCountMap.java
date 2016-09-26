@@ -3,10 +3,8 @@ package ru.sbt.lesson4_Generic;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * Created by Yrwing on 22.09.2016.
- */
-public class RealCountMap<K> implements CountMap<K> {
+
+ public class RealCountMap<K> implements CountMap<K> {
     private final HashMap<K, Integer> NodeMap = new HashMap<>();
 
     @Override
@@ -33,7 +31,7 @@ public class RealCountMap<K> implements CountMap<K> {
     }
 
     @Override
-    public void addAll(CountMap<K> source) {
+    public void addAll(CountMap<? extends K> source) {
         Map<K, Integer> curMap = new HashMap<>(source.toMap());
         for (K key : curMap.keySet()){
             if(curMap.containsKey(key) && (NodeMap.containsKey(key)))
@@ -49,7 +47,7 @@ public class RealCountMap<K> implements CountMap<K> {
     }
 
     @Override
-    public  void toMap(Map<K, Integer> destination) {
+    public  void toMap(Map<? super K, Integer> destination) {
         destination = NodeMap;
     }
 }
