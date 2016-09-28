@@ -1,34 +1,35 @@
 package ru.sbt.Lesson5_Eceptions;
 
-import java.io.IOException;
 import java.util.Scanner;
 
-/**
- * Created by ���� on 24.09.2016.
- */
+
 public class Terminal {
-    TerminalServer server;
-    PinValidator PinV = new PinValidator(server);
-    private Scanner s = new Scanner(System.in);
- /*   public int checkAccount(Scanner s){
+    private TerminalServer server;
+    private PinValidator PinV;
+
+    Terminal(TerminalServer t){
+        this.server = t;
+        PinV = new PinValidator(this.server);
+    }
+
+
+
+
+    public void checkAccount(Scanner s){
         System.out.println("Login:");
-        String name = s.nextLine();
-        System.out.println("PIN");
-        try {
-            short key = s.nextShort();
-            if(!server.pinCheck(name, key)) throw new IncorrectPINException();
-            else
-                server.
-        }
-        catch (IOException | IncorrectPINException e){
-            System.out.println("Incorrect PIN");
+        String name = s.next();
+        System.out.println("PIN:");
+        short key = s.nextShort();
+        if(PinV.pinCheck(name, key)){
+            System.out.println(server.AccountMap.get(name).CheckWallet() + " руб.");
         }
     }
-*/
-    public boolean getMoney(){
+
+    public boolean getMoney(Scanner s){
             System.out.println("Login:");
-            String name = s.nextLine();
-            short key = s.nextShort();
+            String name = s.next();
+        System.out.println("PIN:");
+        short key = s.nextShort();
             if(PinV.pinCheck(name, key)) {
                 System.out.println("How much?");
                 int money = s.nextInt();
@@ -38,9 +39,10 @@ public class Terminal {
                 return false;
     }
 
-    public boolean putMoney(){
+    public boolean putMoney(Scanner s){
         System.out.println("Login:");
-        String name = s.nextLine();
+        String name = s.next();
+        System.out.println("PIN:");
         short key = s.nextShort();
         if(PinV.pinCheck(name, key)) {
             System.out.println("How much?");
@@ -50,10 +52,5 @@ public class Terminal {
         else
             return false;
     }
-    }
-
-
-
-
-  //  PinValidator pinValidator;
+}
 

@@ -5,12 +5,12 @@ import com.sun.xml.internal.ws.policy.privateutil.PolicyUtils;
 import java.io.IOException;
 import java.util.HashMap;
 
-/**
- * Created by ���� on 24.09.2016.
- */
-public class TerminalServer {
-    HashMap<String, Account> AccountMap= new HashMap<>();
 
+public class TerminalServer {
+    HashMap<String, Account> AccountMap;
+    TerminalServer(){
+        AccountMap = new HashMap<>();
+    }
     boolean addAccount(String name, short PIN){
         AccountMap.put(name, new Account(name, PIN));
         return true;
