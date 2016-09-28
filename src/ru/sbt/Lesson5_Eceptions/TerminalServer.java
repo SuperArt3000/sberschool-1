@@ -1,6 +1,5 @@
 package ru.sbt.Lesson5_Eceptions;
 
-import com.sun.xml.internal.ws.policy.privateutil.PolicyUtils;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -20,9 +19,7 @@ public class TerminalServer {
     boolean putMoney(String name, short key, int money) {
         try {
             if (money % 100 != 0) throw new IOException();
-            System.out.println("Check: " + AccountMap.get(name).CheckWallet());
             AccountMap.get(name).put(money);
-            System.out.println("Check: " + AccountMap.get(name).CheckWallet());
             return true;
         }
         catch(IOException e){
@@ -35,13 +32,11 @@ public class TerminalServer {
     boolean getMoney(String name, short key, int money){
         try{
             if (money % 100 != 0) throw new IOException();
-            System.out.println("Check: " + AccountMap.get(name).CheckWallet());
-            if(!AccountMap.get(name).get(money)) throw new NotEnoughGoldException();
-            System.out.println("Check: " + AccountMap.get(name).CheckWallet());
+            if(!AccountMap.get(name).get(money)) throw new NotEnoughGoldException("Your wallet is empty!");
             return true;
         }
         catch(NotEnoughGoldException e) {
-            System.out.println(e.getMessage());
+            Exceptions_Messages.showMessage(e.getMessage());
             return false;
         }
         catch(IOException t){
@@ -50,6 +45,5 @@ public class TerminalServer {
         }
     }
 
-    private class NotEnoughGoldException extends Throwable{
-    }
+
 }

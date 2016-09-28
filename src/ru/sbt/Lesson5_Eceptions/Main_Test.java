@@ -1,6 +1,7 @@
 package ru.sbt.Lesson5_Eceptions;
 
 
+import java.io.IOException;
 import java.util.Scanner;
 
 public class Main_Test {
@@ -18,12 +19,13 @@ public class Main_Test {
         key = 2300;
         server.addAccount("Виктор", key);
         Terminal consoleTerminal = new Terminal(server);
-
-        //consoleTerminal.checkAccount(s);
-        consoleTerminal.putMoney(s);
-        consoleTerminal.putMoney(s);
-        consoleTerminal.getMoney(s);
-        consoleTerminal.getMoney(s);
-        consoleTerminal.checkAccount(s);
+        do {
+            try {
+                consoleTerminal.enterAccount(s);
+            } catch (Exception e) {
+                Exceptions_Messages.showMessage(e.getMessage());
+            }
+            Exceptions_Messages.showMessage("Quit?");
+        } while(s.next() != "Yes");
     }
 }

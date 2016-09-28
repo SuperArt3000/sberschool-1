@@ -23,32 +23,19 @@ public class PinValidator {
          }
          catch(IncorrectPINException e) {
              if (counter < 3)
-                 System.out.println("Incorrect PIN");
+                 Exceptions_Messages.showMessage("Incorrect PIN");
              else {
-                 System.out.println("Incorrect PIN. Access blocked for 5 seconds.");
+                 Exceptions_Messages.showMessage("Incorrect PIN. Access blocked for 5 seconds.");
                  counter = 0;
-                 try {AccessBlock();}
+                 try {Exceptions_Messages.AccessBlock();}
                  catch(AccountLockedException ALEx){
-                     System.out.println(ALEx.getMessage());
+                     Exceptions_Messages.showMessage(ALEx.getMessage());
                  }
              }
              return false;
          }
     }
-    private void AccessBlock() throws AccountLockedException{
-        Scanner s = new Scanner(System.in);
-        try {
-            for (int i = 10; i > 0; i--) {
-                Thread.sleep(500);
-                if (s.hasNext()) throw new AccountLockedException((0.5*i) + " seconds remain.");
-            }
-        } catch (InterruptedException exc) {
-            exc.printStackTrace();
-        }
 
-    }
-    public class IncorrectPINException extends Throwable{
-        public IncorrectPINException(String msg){super(msg);}
-    }
+
 }
 

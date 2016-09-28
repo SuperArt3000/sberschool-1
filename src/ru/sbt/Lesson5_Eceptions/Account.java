@@ -1,12 +1,12 @@
 package ru.sbt.Lesson5_Eceptions;
 
 
-public class Account {
+ class Account {
     String login;
     private int wallet;
     final short PIN;
 
-    public Account(String name, short key){
+    Account(String name, short key){
         this.login = name;
         this.PIN = key;
     }
