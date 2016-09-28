@@ -1,56 +1,60 @@
 package ru.sbt.Lesson5_Eceptions;
 
+import java.io.IOException;
 import java.util.Scanner;
 
 
 public class Terminal {
-    private TerminalServer server;
-    private PinValidator PinV;
+    private final TerminalServer server;
+    private final PinValidator PinV;
 
     Terminal(TerminalServer t){
         this.server = t;
         PinV = new PinValidator(this.server);
     }
 
-
-
-
-    public void checkAccount(Scanner s){
+    public void enterAccount(Scanner s) throws IOException{
         System.out.println("Login:");
         String name = s.next();
-        System.out.println("PIN:");
-        short key = s.nextShort();
-        if(PinV.pinCheck(name, key)){
-            System.out.println(server.AccountMap.get(name).CheckWallet() + " руб.");
-        }
-    }
+        if(this.server.AccountMap.containsKey(name)) {
+            System.out.println("PIN:");
+            short key = s.nextShort();
+            if (PinV.pinCheck(name, key)) {
 
-    public boolean getMoney(Scanner s){
-            System.out.println("Login:");
-            String name = s.next();
-        System.out.println("PIN:");
-        short key = s.nextShort();
-            if(PinV.pinCheck(name, key)) {
-                System.out.println("How much?");
-                int money = s.nextInt();
-                return server.getMoney(name, key, money);
+                    switch (s.next()) {
+                        case "-get": {
+                            this.getMoney(name, key, s);
+                            break;
+                        }
+                        case "-put": {
+                            this.putMoney(name, key, s);
+                            break;
+                        }
+                        case "-check": {
+                            Exceptions_Messages.showMessage(server.AccountMap.get(name).CheckWallet() + " руб.");
+                            break;
+                        }
+                        default: {
+                            System.out.println("Unknown command");
+                            break;
+                        }
+                    }
             }
-            else
-                return false;
+        }
+        else if(name.startsWith("-")) throw new IOException("Login first!");
+        else System.out.println("Account does not exist.");
     }
 
-    public boolean putMoney(Scanner s){
-        System.out.println("Login:");
-        String name = s.next();
-        System.out.println("PIN:");
-        short key = s.nextShort();
-        if(PinV.pinCheck(name, key)) {
-            System.out.println("How much?");
-            int money = s.nextInt();
-            return server.putMoney(name, key, money);
-        }
-        else
-            return false;
+    private boolean getMoney(String name, short key, Scanner s){
+        System.out.println("How much?");
+        int money = s.nextInt();
+        return server.getMoney(name, key, money);
+    }
+
+    private boolean putMoney(String name, short key, Scanner s){
+        System.out.println("How much?");
+        int money = s.nextInt();
+        return server.putMoney(name, key, money);
     }
 }
 
