@@ -20,8 +20,8 @@ public class CollectionUtils {
         return source.indexOf(t);
     }
 
-    public static<T> List<T> limit(List<T> source, int size) {
-        return source.subList(0, size);
+    public static<T> List<T> limit(List<? extends T> source, int size) {
+        return new ArrayList<T>(source.subList(0, size));
     }
 
     public static<T> void add(List<? super T> source, T t) {
@@ -43,9 +43,9 @@ public class CollectionUtils {
         return false;
     }
 
-    public static<T> List<Comparable<T>> range(List<? extends Comparable<T>> list, T min, T max) {
-        List<Comparable<T>> subList = new LinkedList<Comparable<T>>();
-        for (Comparable<T> item : list) {
+    public static<T extends Comparable<? super T>> List<T> range(List<? extends T> list, T min, T max) {
+        List<T> subList = new LinkedList<>();
+        for (T item : list) {
             if (Math.abs(item.compareTo(min)+item.compareTo(max)) < 2)
                 subList.add(item);
         }

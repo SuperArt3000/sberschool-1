@@ -13,7 +13,7 @@ public class Terminal {
         PinV = new PinValidator(this.server);
     }
 
-    public void enterAccount(Scanner s) throws IOException{
+    public void enterAccount(Scanner s) throws Exception{
         System.out.println("Login:");
         String name = s.next();
         if(this.server.AccountMap.containsKey(name)) {
@@ -42,7 +42,7 @@ public class Terminal {
             }
         }
         else if(name.startsWith("-")) throw new IOException("Login first!");
-        else System.out.println("Account does not exist.");
+        else throw new AccountNotExist("Account does not exist.");
     }
 
     private boolean getMoney(String name, short key, Scanner s){
