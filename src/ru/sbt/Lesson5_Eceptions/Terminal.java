@@ -3,7 +3,6 @@ package ru.sbt.Lesson5_Eceptions;
 import java.io.IOException;
 import java.util.Scanner;
 
-
 public class Terminal {
     private final TerminalServer server;
     private final PinValidator PinV;
@@ -45,13 +44,13 @@ public class Terminal {
         else throw new AccountNotExist("Account does not exist.");
     }
 
-    private boolean getMoney(String name, short key, Scanner s){
+    private boolean getMoney(String name, short key, Scanner s) throws IOException,NotEnoughGoldException, TOException{
         System.out.println("How much?");
         int money = s.nextInt();
         return server.getMoney(name, key, money);
     }
 
-    private boolean putMoney(String name, short key, Scanner s){
+    private boolean putMoney(String name, short key, Scanner s) throws IOException, TOException{
         System.out.println("How much?");
         int money = s.nextInt();
         return server.putMoney(name, key, money);

@@ -3,6 +3,7 @@ package ru.sbt.Lesson5_Eceptions;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Random;
 
 
 public class TerminalServer {
@@ -16,34 +17,22 @@ public class TerminalServer {
     }
 
 
-    boolean putMoney(String name, short key, int money) {
-        try {
-            if (money % 100 != 0) throw new IOException();
+    boolean putMoney(String name, short key, int money) throws IOException, TOException {
+        Random rS = new Random();
+        int r = rS.ints().limit(1).sum();
+        if(r % 3 != 0) throw new TOException("Проводятся регламентные работы");
+            if (money % 100 != 0) throw new IOException("Wrong number!");
             AccountMap.get(name).put(money);
             return true;
-        }
-        catch(IOException e){
-            System.out.println("Wrong number!");
-            return false;
-        }
     }
 
 
-    boolean getMoney(String name, short key, int money){
-        try{
-            if (money % 100 != 0) throw new IOException();
+    boolean getMoney(String name, short key, int money) throws IOException, NotEnoughGoldException, TOException{
+        Random rS = new Random();
+        int r = rS.ints().limit(1).sum();
+        if(r % 3 != 0) throw new TOException("Проводятся регламентные работы");
+        if (money % 100 != 0) throw new IOException("Wrong number!");
             if(!AccountMap.get(name).get(money)) throw new NotEnoughGoldException("Your wallet is empty!");
             return true;
-        }
-        catch(NotEnoughGoldException e) {
-            Exceptions_Messages.showMessage(e.getMessage());
-            return false;
-        }
-        catch(IOException t){
-            System.out.println("Wrong number!");
-            return false;
-        }
     }
-
-
 }

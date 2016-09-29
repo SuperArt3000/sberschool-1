@@ -48,7 +48,15 @@ class NotEnoughGoldException extends Exception{
     public NotEnoughGoldException(String msg){super(msg);}
 }
 
+/**
+ * Бросается если ключ Login не найден в AccountMap.
+ */
 class AccountNotExist extends Exception{
     public AccountNotExist(String msg){super(msg);}
+
+}
+
+class TOException extends Exception{
+    public TOException(String msg){super(msg);}
 
 }
