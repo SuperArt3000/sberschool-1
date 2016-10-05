@@ -11,9 +11,7 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-/**
- * Created by Yrwing on 04.10.2016.
- */
+
 public class InterfaceStreamer {
 
 

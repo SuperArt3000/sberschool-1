@@ -6,12 +6,11 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.*;
 
-/**
- * Created by Yrwing on 04.10.2016.
- */
-public class CashProxy {
+
+class CashProxy {
     /**
      * В CashedMethods хранятся методы и кэшированные результаты, разбросанные по соответствующим им интерфейсам
+     *
      */
     private final Map<Class<?>, HashMap<Method, Object>> CashedMethods;
     private final Package basePackage;
