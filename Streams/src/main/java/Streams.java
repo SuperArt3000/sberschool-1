@@ -1,7 +1,5 @@
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import java.lang.reflect.Method;
+import java.util.*;
 import java.util.function.BinaryOperator;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -16,12 +14,11 @@ public class Streams<T> {
 
 
 
-    private Collection<T> dataCollection;
-    public final Collection<T> getDataCollection() {
-        return dataCollection;
-    }
+    private Collection<Optional<T>> dataCollection = new ArrayList<>();
+    private Queue<Operation<Optional<T>>> taskQueue = new ArrayDeque<>();
+
     private  Streams (Collection<T> it){
-        this.dataCollection = it;
+        it.forEach(item->dataCollection.add(Optional.of(item)));
     }
 
     /**
@@ -31,8 +28,7 @@ public class Streams<T> {
      * @param <T> type of elements
      * @return a new Stream
      */
-    static <T> Streams<T> of(Collection<? extends T> collection){
-        return new Streams(collection);
+    static <T> Streams<T> of(Collection<? extends T> collection){return new Streams(collection);
     }
 
     /**
@@ -40,36 +36,36 @@ public class Streams<T> {
      * @param predicate
      * @return Streams of elements, for which predicate returns true.
      */
-    Streams<T> filter(Predicate<? super T> predicate){
-                dataCollection.removeIf(t -> !predicate.test(t));
-        return Streams.of(this.getDataCollection());
+    public Streams<T> filter(Predicate<? super T> predicate){
+        Operation<Optional<T>> filterValue = new Operation<Optional<T>>(){
+            @Override
+            public Optional<T> apply(Optional<T> value){
+                if(value.isPresent()) {
+                    return (predicate.test(value.get())) ? value : null;
+                }
+                else return null;
+            }
+
+        };
+        taskQueue.add(filterValue);
+        return this;
     }
 
     /**
      * Аналог метода map в Stream.
      *
-     * @param function = mapper in Stream
-     * @param <R> type of returned Streams elements
      * @return the new Streams
      * @throws Exception
      */
-    final <R> Streams<R> transform(Function<? super T,? extends R> function)throws Exception{
-        Collection<R> rCollection = dataCollection.getClass().newInstance();
-        dataCollection.forEach((t -> rCollection.add(function.apply(t))));
-        return  Streams.of(rCollection);
-    }
-
-    /**
-     *
-     * @param identity
-     * @param accumulator
-     * @return
-     */
-    final T reduce(T identity, BinaryOperator<T> accumulator){
-        T result = identity;
-        for (T item : dataCollection)
-        result = accumulator.apply(result, item);
-        return result;
+    final  Streams<T> transform(Function<? super T, ? extends T> transformator)throws Exception{
+        Operation<Optional<T>> transformOperation = new Operation<Optional<T>>(){
+            @Override
+            public Optional<T> apply(Optional<T> value){
+                return(value.isPresent())? Optional.of(transformator.apply(value.get())) : null;
+           }
+        };
+        taskQueue.add(transformOperation);
+        return  this;
     }
 
     /**
@@ -82,8 +78,25 @@ public class Streams<T> {
      */
     final <K, V> Map<K, V> toMap(Function<? super T, ? extends K> keyGen, Function<? super T, ? extends V> valueGen) {
         Map<K, V> result = new HashMap<K, V>();
-        dataCollection.forEach(t -> result.put(keyGen.apply(t), valueGen.apply(t)));
+        dataCollection.forEach(t ->{
+            Iterator<Operation<Optional<T>>> iterator = taskQueue.iterator();
+            Optional<T> processedItem = t;
+            while(iterator.hasNext()) {
+                processedItem = iterator.next().apply(processedItem);
+            }
+            if (processedItem.isPresent()) {
+                result.put(keyGen.apply(processedItem.get()), valueGen.apply(processedItem.get()));
+            }
+        });
         return result;
     }
 
+
+    class Operation<T> implements Function<T,T>{
+        @Override
+        public T apply(T value){
+            return null;
+        }
+
+    };
 }
