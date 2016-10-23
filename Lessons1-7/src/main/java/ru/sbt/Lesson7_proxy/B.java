@@ -2,6 +2,6 @@ package ru.sbt.Lesson7_proxy;
 
 
 public interface B {
-    @Cashe
+    @Cache(Cache.CachType.FILE)
     int cashedsum(int a, int b);
 }

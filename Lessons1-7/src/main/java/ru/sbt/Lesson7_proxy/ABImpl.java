@@ -1,7 +1,7 @@
 package ru.sbt.Lesson7_proxy;
 
 
-public class A_B_Impl implements A,B {
+public class ABImpl implements A,B {
     @Override
     public int out(int i) {
         return i*10;

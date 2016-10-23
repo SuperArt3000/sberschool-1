@@ -9,5 +9,7 @@ import java.lang.annotation.Target;
 
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Cashe {
+public @interface Cache {
+    public enum CachType {MEMORY, FILE, MEMORY_AND_FILE}
+    CachType value() default CachType.MEMORY;
 }
