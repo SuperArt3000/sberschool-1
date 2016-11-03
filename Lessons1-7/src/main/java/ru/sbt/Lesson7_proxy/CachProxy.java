@@ -4,15 +4,24 @@ import java.io.*;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
-import java.util.*;
+import java.util.Arrays;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
+
+import static ru.sbt.Lesson7_proxy.CachType.FILE;
 
 
 class CachProxy {
+
+    private final ReadWriteLock rwlock = new ReentrantReadWriteLock();
+    private final Lock rLock = rwlock.readLock();
+    private final Lock wLock = rwlock.writeLock();
     /**
      * В CashedMethods хранятся методы и кэшированные результаты, разбросанные по соответствующим им интерфейсам
      *
      */
-    private final CachedClasses cachedClasses;
+    private final ClassMethods classesMethods;
     private final Class<?>[] interfaces;
     private final Package basePackage;
 
@@ -24,11 +33,11 @@ class CachProxy {
                 .getResource(basePackage.getName().replace(".", "/"))
                 .getFile());
         this.interfaces = InterfaceStreamer.getAllClassesByPredicate(basePackage, baseFile);
-        cachedClasses = new CachedClasses(interfaces);
+        classesMethods = new ClassMethods();
 
     }
 
-    Object newCashProxy (Object cls){
+    synchronized Object  newCashProxy (Object cls){
         return Proxy.newProxyInstance(
                 ClassLoader.getSystemClassLoader(),
                 interfaces, new LogHandler(cls));
@@ -43,56 +52,61 @@ class CachProxy {
         }
         @Override
         public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-            if(method.isAnnotationPresent(Cache.class)){
-                switch(method.getAnnotation(Cache.class).value()) {
-                    case FILE:
-                        if(isSerialiseble(method)){
-                            try {
-                                cachedClasses.put(method.getDeclaringClass(),
-                                        (ClassMethods) deserialize("C:\\Users\\Yrwing\\IdeaProjects\\sberschool\\Lessons1-7\\src\\main\\Proxy_Cach\\"
-                                                + method.getDeclaringClass().getName() + method.getName()));
-
-                            }catch(FileNotFoundException fnfe){
-                                System.out.println("Creating new cache file...");
-                            }
-                        }
-                        else{System.out.println("Caching prohibited, invoking method...");}
-                        break;
-                    case MEMORY: {
-                        putIfAbsent(method, delegate, args);
-                        break;
+            if(method.isAnnotationPresent(Cache.class)) {
+                CachType type = method.getAnnotation(Cache.class).value();
+                CachedResult methodOutputs =null;
+                String methodName = getMethodCacheName(method);
+                if (isSerialiseble(method)) {
+                    rLock.lock();
+                    try {
+                        methodOutputs = type.readSerializedCache(methodName);
+                    }finally{
+                        rLock.unlock();
                     }
-                    case MEMORY_AND_FILE:
-                        if(isSerialiseble(method)){
-                            try{
-                            cachedClasses.put(method.getDeclaringClass(),
-                                    (ClassMethods) deserialize("C:\\Users\\Yrwing\\IdeaProjects\\sberschool\\Lessons1-7\\src\\main\\Proxy_Cach\\"
-                                            + method.getDeclaringClass().getName() + method.getName()));
-                            }catch(FileNotFoundException e) {
-                                System.out.println("Creating new cache file...");
+
+                } else if (type == FILE) {
+                    System.out.println("Caching prohibited, invoking method...");
+                }
+                if(methodOutputs == null){
+                    rLock.lock();
+                    try {
+                        if (classesMethods.find(methodName, args)) {
+                            return classesMethods.getResult(methodName, args);
+                        }else {
+                            rLock.unlock();
+                            wLock.lock();
+                            try {
+                                putIfAbsent(method, delegate, args);
+                            }finally {
+                                wLock.unlock();
+                                rLock.lock();
                             }
                         }
-                        else  putIfAbsent(method, delegate, args);
-                        break;
-
+                    }finally{
+                        rLock.unlock();
+                    }
                 }
-                if (isSerialiseble(method) && (method.getAnnotation(Cache.class).value() != Cache.CachType.MEMORY)){
-                    putIfAbsent(method, delegate, args);
-                    serialize("C:\\Users\\Yrwing\\IdeaProjects\\sberschool\\Lessons1-7\\src\\main\\Proxy_Cach\\"
-                            + method.getDeclaringClass().getName() + method.getName(), cachedClasses.get(method));
-                }try {
-                    return cachedClasses.get(method).getResult(method, args);
-                }catch (NullPointerException npe){
+                if (isSerialiseble(method) && (method.getAnnotation(Cache.class).value() != CachType.MEMORY)) {
+                    wLock.lock();
+                    try {
+                        serialize("C:\\Users\\Yrwing\\IdeaProjects\\sberschool\\Lessons1-7\\src\\main\\Proxy_Cach\\"
+                                + methodName, classesMethods.results(methodName));
+                    }finally {
+                        wLock.unlock();
+                    }
+                }
+                try {
+                    return classesMethods.getResult(methodName, args);
+                } catch (NullPointerException npe) {
                     return method.invoke(delegate, args);
                 }
             }
             else throw new Exception();
         }
     }
-    //TODO: разумно ли передавать метод в качестве аргумента, или лучше использовать его имя?
     private void putIfAbsent(Method method, Object delegate, Object[] args) throws Throwable{
-        cachedClasses.get(method).putIfAbsent(method, new CachedResult());
-        cachedClasses.get(method).putIfAbsent(method, delegate, args);
+        classesMethods.putIfAbsent(method, new CachedResult());
+        classesMethods.putIfAbsent(method, delegate, args);
     }
 
     /**
@@ -106,16 +120,12 @@ class CachProxy {
         oos.writeObject(serializedClass);
     }
 
-    private Object deserialize(String filename) throws IOException, ClassNotFoundException {
-        FileInputStream fis = new FileInputStream(filename);
-        ObjectInputStream in = new ObjectInputStream(fis);
-        return  in.readObject();
-    }
-
     private boolean isSerialiseble(Method method){
         return Arrays.asList(method.getDeclaringClass().getInterfaces()).contains(Serializable.class);
     }
-
+    private String getMethodCacheName(Method method){
+        return method.getDeclaringClass().getName() + "_" + method.getName();
+    }
 }
 
 

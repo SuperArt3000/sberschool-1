@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/Lessons1-7/Lessons1-7.iml" filepath="$PROJECT_DIR$/Lessons1-7/Lessons1-7.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Streams/Streams.iml" filepath="$PROJECT_DIR$/Streams/Streams.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Terminal/Terminal1.iml" filepath="$PROJECT_DIR$/Terminal/Terminal1.iml" />
+      <module fileurl="file://$PROJECT_DIR$/sberschool.iml" filepath="$PROJECT_DIR$/sberschool.iml" />
+    </modules>
+  </component>
+</project>

@@ -1,15 +1,16 @@
 package ru.sbt.Lesson7_proxy;
 
+
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-
-
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Cache {
-    public enum CachType {MEMORY, FILE, MEMORY_AND_FILE}
+
     CachType value() default CachType.MEMORY;
+
+
 }

@@ -7,8 +7,7 @@ public class ABImpl implements A,B {
         return i*10;
     }
 
-    @Override
-    public int cashedsum(int a, int b) {
+    @Override    public int cashedsum(int a, int b) {
         return 10*(a+b);
     }
 }

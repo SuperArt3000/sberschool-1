@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 class CachedResult implements Serializable{
+   // private static final long SerialVersionUID;
     private Map<Object[], Object> resultsMap;
 
     public CachedResult() {
@@ -19,5 +20,8 @@ class CachedResult implements Serializable{
     }
     Object get(Object[] args){
         return resultsMap.get(args);
+    }
+    boolean find(Object[] args){
+        return resultsMap.containsKey(args);
     }
 }

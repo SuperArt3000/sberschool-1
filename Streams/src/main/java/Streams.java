@@ -1,24 +1,18 @@
-import java.lang.reflect.Method;
 import java.util.*;
-import java.util.function.BinaryOperator;
 import java.util.function.Function;
 import java.util.function.Predicate;
-import java.util.function.Supplier;
-import java.util.stream.Collector;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
-import static javafx.scene.input.KeyCode.T;
 
 public class Streams<T> {
 
 
 
+     private  Collection<T> source;
     private Collection<Optional<T>> dataCollection = new ArrayList<>();
-    private Queue<Operation<Optional<T>>> taskQueue = new ArrayDeque<>();
+    private  Queue<Function> taskQueue = new ArrayDeque<>();
 
-    private  Streams (Collection<T> it){
-        it.forEach(item->dataCollection.add(Optional.of(item)));
+    private  Streams (Collection<T> collection){
+        source = collection;
     }
 
     /**
@@ -28,16 +22,17 @@ public class Streams<T> {
      * @param <T> type of elements
      * @return a new Stream
      */
-    static <T> Streams<T> of(Collection<? extends T> collection){return new Streams(collection);
+    @SuppressWarnings("unchecked")
+    static <T> Streams<T> of(Collection<? extends T> collection){
+        return new Streams(collection);
     }
 
     /**
      *
-     * @param predicate
      * @return Streams of elements, for which predicate returns true.
      */
     public Streams<T> filter(Predicate<? super T> predicate){
-        Operation<Optional<T>> filterValue = new Operation<Optional<T>>(){
+        Function<Optional<T>, Optional<T>> filterValue = new Operation<Optional<T>, Optional<T>>(){
             @Override
             public Optional<T> apply(Optional<T> value){
                 if(value.isPresent()) {
@@ -57,11 +52,11 @@ public class Streams<T> {
      * @return the new Streams
      * @throws Exception
      */
-    final  Streams<T> transform(Function<? super T, ? extends T> transformator)throws Exception{
-        Operation<Optional<T>> transformOperation = new Operation<Optional<T>>(){
+    final <R> Streams<T> transform(Function<? super T, ? extends R> transformator)throws Exception{
+        Function<Optional<T>, Optional<R>> transformOperation = new Operation<Optional<T>, Optional<R>>(){
             @Override
-            public Optional<T> apply(Optional<T> value){
-                return(value.isPresent())? Optional.of(transformator.apply(value.get())) : null;
+            public Optional<R> apply(Optional<T> value){
+                return(value.isPresent())? Optional.ofNullable(transformator.apply(value.get())) : null;
            }
         };
         taskQueue.add(transformOperation);
@@ -76,13 +71,14 @@ public class Streams<T> {
      * @param <V> type of Map values
      * @return HashMap<K,V> (not a Map!)
      */
-    final <K, V> Map<K, V> toMap(Function<? super T, ? extends K> keyGen, Function<? super T, ? extends V> valueGen) {
-        Map<K, V> result = new HashMap<K, V>();
-        dataCollection.forEach(t ->{
-            Iterator<Operation<Optional<T>>> iterator = taskQueue.iterator();
-            Optional<T> processedItem = t;
+    @SuppressWarnings("unchecked")
+    final <K, V> Map<K, V> toMap(Function<? super T, ? extends K> keyGen, Function<Object, ? extends V> valueGen) {
+        Map<K, V> result = new HashMap<K, V>();Inter
+        source.forEach(t ->{
+            Iterator<Function> iterator = taskQueue.iterator();
+            Optional<> processedItem = Optional.ofNullable(t);
             while(iterator.hasNext()) {
-                processedItem = iterator.next().apply(processedItem);
+                processedItem = Optional.ofNullable(iterator.next().apply(processedItem));
             }
             if (processedItem.isPresent()) {
                 result.put(keyGen.apply(processedItem.get()), valueGen.apply(processedItem.get()));
@@ -92,9 +88,9 @@ public class Streams<T> {
     }
 
 
-    class Operation<T> implements Function<T,T>{
+    private class Operation<E, R> implements Function<E,R>{
         @Override
-        public T apply(T value){
+        public R apply(E value){
             return null;
         }
 

@@ -17,7 +17,7 @@ public class MainTest {
             Map<String, Person> m = Streams.of(persons)
                     .filter(p -> p.getAge() > 20)
                     .transform( p ->new Person(p.getName(), p.getAge() + 30))
-                    .toMap(Person :: getName,  p -> p);
+                    .toMap(p->p.,  p -> p);
             m.forEach((key, value)-> System.out.println(key + "-->" + value.getAge()));
             System.out.println("____Starting list of persons____");
             persons.forEach(p-> System.out.println(p.getName() + "-->" + p.getAge()));
