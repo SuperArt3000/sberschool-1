@@ -1,4 +1,4 @@
-package ru.sbt.MavenTerminal;
+package MavenTerminal;
 
 import org.junit.BeforeClass;
 import org.junit.Test;

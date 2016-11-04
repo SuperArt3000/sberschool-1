@@ -1,4 +1,4 @@
-package cicle_2009;
+package ru.sbt.lesson1.cicle_2009;
 
 import java.util.Scanner;
 

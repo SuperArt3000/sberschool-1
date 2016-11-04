@@ -5,8 +5,8 @@ package ru.sbt;
  */
 public class Main {
     public static void main(String[] args) {
-        ThreadPool threadPool = new FixedThreadPool(6);
-        for (int i = 0; i < 15; i++) {
+        /*ThreadPool threadPool = new FixedThreadPool(6);
+        for (int i = 0; i < 8; i++) {
             threadPool.execute(new Goal(i));
         }
         threadPool.start();
@@ -16,9 +16,9 @@ public class Main {
             e.printStackTrace();
         }
         threadPool.stop();
-        System.out.println("_______");
-        ThreadPool threadPool1 = new ScalableThreadPool(4, 6);
-        for (int i = 0; i < 15; i++) {
+        System.out.println("_______");*/
+        ThreadPool threadPool1 = new ScalableThreadPool(2, 8);
+        for (int i = 0; i < 20; i++) {
             threadPool1.execute(new Goal(i));
         }
         threadPool1.start();

@@ -2,9 +2,7 @@ package ru.sbt.MavenTerminal;
 
 import javax.security.auth.login.AccountLockedException;
 
-/**
- * Created by ���� on 25.09.2016.
- */
+
 public class PinValidator {
     private short mistakeCounter;
     private TerminalServer server;

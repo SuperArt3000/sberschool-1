@@ -1,4 +1,4 @@
-package strings_2039;
+package ru.sbt.lesson1.cicle_2009.strings_2039;
 
 
 import java.io.BufferedReader;

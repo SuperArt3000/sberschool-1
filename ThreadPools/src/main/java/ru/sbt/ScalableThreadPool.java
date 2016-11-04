@@ -7,12 +7,10 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-/**
- * Created by Yrwing on 01.11.2016.
- */
+
 public class ScalableThreadPool implements ThreadPool {
-    private volatile Queue<Runnable> taskQueue = new LinkedBlockingQueue<Runnable>();
-    private volatile List<Worker> threadList;
+    private final  Queue<Runnable> taskQueue = new LinkedBlockingQueue<Runnable>();
+    private final List<Worker> threadList;
     private  volatile boolean stopFlag = true;
     private final int min;
     private final int max;
@@ -51,7 +49,7 @@ public class ScalableThreadPool implements ThreadPool {
     public synchronized void execute(Runnable task){
         synchronized(taskQueue) {
             taskQueue.add(task);
-            taskQueue.notifyAll();
+            taskQueue.notify();
         }
     }
 
@@ -60,9 +58,9 @@ public class ScalableThreadPool implements ThreadPool {
         Thread t;
         Lock taskLock = new ReentrantLock();
 
-        private volatile boolean isFree = true;
         protected volatile boolean isStopped = true;
         protected volatile Runnable currentTask;
+        protected volatile boolean isFree = true;
         void startWorker() {
             t = new Thread(new Runnable() {
 
@@ -87,10 +85,12 @@ public class ScalableThreadPool implements ThreadPool {
         protected void getNewTask() {
             if (taskQueue.isEmpty()) {
                 synchronized (taskQueue) {
-                    try {
-                        taskQueue.wait();
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
+                    if (taskQueue.isEmpty()) {
+                        try {
+                            taskQueue.wait();
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
                     }
                 }
             }
@@ -119,11 +119,8 @@ public class ScalableThreadPool implements ThreadPool {
                 isStopped = true;
             }
             else {
-                taskLock.lock();
-                try {
+                synchronized(taskQueue){
                     this.currentTask = taskQueue.poll();
-                } finally {
-                    taskLock.unlock();
                 }
             }
             if (currentTask == null) this.isStopped = true;

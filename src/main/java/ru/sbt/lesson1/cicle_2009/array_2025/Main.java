@@ -1,4 +1,4 @@
-package array_2025;
+package ru.sbt.lesson1.cicle_2009.array_2025;
 
 import java.util.Scanner;
 

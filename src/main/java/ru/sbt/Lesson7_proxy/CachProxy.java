@@ -17,10 +17,7 @@ class CachProxy {
     private final ReadWriteLock rwlock = new ReentrantReadWriteLock();
     private final Lock rLock = rwlock.readLock();
     private final Lock wLock = rwlock.writeLock();
-    /**
-     * В CashedMethods хранятся методы и кэшированные результаты, разбросанные по соответствующим им интерфейсам
-     *
-     */
+
     private final ClassMethods classesMethods;
     private final Class<?>[] interfaces;
     private final Package basePackage;
@@ -89,7 +86,7 @@ class CachProxy {
                 if (isSerialiseble(method) && (method.getAnnotation(Cache.class).value() != CachType.MEMORY)) {
                     wLock.lock();
                     try {
-                        serialize("C:\\Users\\Yrwing\\IdeaProjects\\sberschool\\Lessons1-7\\src\\main\\Proxy_Cach\\"
+                        serialize("C:\\Users\\Yrwing\\IdeaProjects\\sberschool\\src\\main\\Proxy_Cach\\"
                                 + methodName, classesMethods.results(methodName));
                     }finally {
                         wLock.unlock();
@@ -109,11 +106,6 @@ class CachProxy {
         classesMethods.putIfAbsent(method, delegate, args);
     }
 
-    /**
-     * Serialization methods
-     * TODO: при изменении кода или запуска на другой машине может выпасть ошибка InvalidClassException.
-     * TODO: Я просто удаляю старый кэш-файл. Переписать versionUID?
-     */
     private void serialize(String filename, Object serializedClass) throws  IOException,FileNotFoundException{
         FileOutputStream fos = new FileOutputStream(filename);
         ObjectOutputStream oos = new ObjectOutputStream(fos);

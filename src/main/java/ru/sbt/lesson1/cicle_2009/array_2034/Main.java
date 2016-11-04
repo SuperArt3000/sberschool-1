@@ -1,4 +1,4 @@
-package array_2034;
+package ru.sbt.lesson1.cicle_2009.array_2034;
 
 import java.util.Scanner;
 

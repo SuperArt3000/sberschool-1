@@ -10,7 +10,7 @@ public enum CachType {
     }}, FILE {
         public CachedResult readSerializedCache(String methodName) throws Exception {
                 try {
-                    return (CachedResult) deserialize("C:\\Users\\Yrwing\\IdeaProjects\\sberschool\\Lessons1-7\\src\\main\\Proxy_Cach\\" + methodName);
+                    return (CachedResult) deserialize("C:\\Users\\Yrwing\\IdeaProjects\\sberschool\\src\\main\\Proxy_Cach\\" + methodName);
                 } catch (FileNotFoundException fnfe) {
                     System.out.println("Creating new cache file...");
                     return null;
@@ -20,7 +20,7 @@ public enum CachType {
         MEMORY_AND_FILE {
             public CachedResult readSerializedCache(String methodName) throws Exception {
                 try {
-                    return (CachedResult) deserialize("C:\\Users\\Yrwing\\IdeaProjects\\sberschool\\Lessons1-7\\src\\main\\Proxy_Cach\\" + methodName);
+                    return (CachedResult) deserialize("\"C:\\Users\\Yrwing\\IdeaProjects\\sberschool\\src\\main\\Proxy_Cach\\" + methodName);
                 } catch (FileNotFoundException fnfe) {
                     System.out.println("Creating new cache file...");
                     return null;
