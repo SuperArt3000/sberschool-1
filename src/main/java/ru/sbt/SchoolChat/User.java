@@ -65,7 +65,7 @@ public class User {
     private void newMessage(BufferedReader console,DatagramSocket socket, InetAddress group) throws IOException{
         String line = console.readLine();
         if(!line.equalsIgnoreCase("exit")){
-            line = MSG + name + ">>>" + line;
+            line = MSG + name + "-->" + line;
             byte[] bytes = line.getBytes();
             DatagramPacket dp = new DatagramPacket(bytes, bytes.length, group, 1234);
             socket.send(dp);

@@ -93,7 +93,7 @@ public class Server implements Runnable{
     private void sendToReceiver(DatagramPacket dpMessage) throws IOException {
         String line = new String(dpMessage.getData(), 0, dpMessage.getLength());
         line = line.substring(1);
-        SocketAddress address = addressBook.get(line.split(">>>")[1].split("::")[0]);
+        SocketAddress address = addressBook.get(line.split("-->")[1].split(">>")[0]);//TODO аккуратно разбить на цель отправителя текст
         if(address != null) {
             dpMessage.setSocketAddress(address);
         }
