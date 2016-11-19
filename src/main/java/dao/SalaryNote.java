@@ -1,6 +1,6 @@
 package dao;
 
-public class SalaryNote {
+public class SalaryNote implements Note{
     private final String name;
     private final double salary;
 
